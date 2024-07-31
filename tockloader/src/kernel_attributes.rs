@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0 OR MIT
 // Copyright OXIDOS AUTOMOTIVE 2024.
 
+
 use core::str;
 use std::collections::HashMap;
 
@@ -46,6 +47,15 @@ pub fn kernel_attributes(board_core: &mut Core, attributes: &mut HashMap<String,
     println!("KATLV: APP Memory (0x101)");
     // println!("  app_memory_start: {:?}",);
     // println!("  app_memory_len: {:?}",);
+    //println!("{:?}", kernel_attr_binary);
+
+    let sentinel = bytes_to_string(&kernel_attr_binary[96..100]);
+
+    println!("  Sentinel: {:?}", sentinel);
+
+    let version = kernel_attr_binary[95];
+
+    println!("  Version: {:?}", version);
 }
 
 // TODO(RARES): will have to use this in board attributes too where needed to debload some of the code
