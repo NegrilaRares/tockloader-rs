@@ -9,7 +9,7 @@ mod errors;
 mod interfaces;
 mod kernel_attributes;
 
-use std::collections::HashMap;
+// use std::collections::HashMap;
 
 use board_attributes::{get_all_attributes, get_bootloader_version};
 use board_settings::BoardSettings;
@@ -23,12 +23,6 @@ use probe_rs::probe::list::Lister;
 use probe_rs::{MemoryInterface, Permissions};
 use tbf_parser::parse::*;
 use tbf_parser::types::*;
-
-pub trait HashType {}
-
-impl HashType for String {}
-impl HashType for u16 {}
-impl HashType for u32 {}
 
 #[tokio::main]
 async fn main() -> Result<(), TockloaderError> {
@@ -83,7 +77,7 @@ async fn list_probes(sub_matches: &ArgMatches, _info: bool) -> Result<(), Tocklo
 
     let ans = Select::new("Which probe do you want to use?", probes).prompt();
 
-    let mut app_details: HashMap<String, Box<dyn HashType>> = HashMap::new();
+    // let mut app_details: [HashMap<String, String>] = [HashMap::new(), ];
 
     match ans {
         Ok(choice) => {
@@ -123,11 +117,12 @@ async fn list_probes(sub_matches: &ArgMatches, _info: bool) -> Result<(), Tocklo
                 let (ver, header_len, whole_len) =
                     match parse_tbf_header_lengths(&buff[0..8].try_into().unwrap()) {
                         Ok((ver, header_len, whole_len)) if header_len != 0 => {
-                            // println!("Version: {:?}\n", ver);
-                            // println!("Header length: {:?}\n", header_len);
-                            // println!("Whole length: {:?}\n", whole_len);
-                            app_details.insert("version".to_owned(), Box::new(ver));
-                            let value = println!("Version: {:#?}\n",);
+                            println!("Version: {:?}\n", ver);
+                            println!("Header length: {:?}\n", header_len);
+                            println!("Whole length: {:?}\n", whole_len);
+                            // app_details.insert("version".to_owned(), ver.to_string());
+                            // app_details.insert("header_size".to_owned(), header_len.to_string());
+                            // app_details.insert("total_size".to_owned(), whole_len.to_string());
                             (ver, header_len, whole_len)
                         }
                         _ => break, // No more apps
@@ -141,6 +136,7 @@ async fn list_probes(sub_matches: &ArgMatches, _info: bool) -> Result<(), Tocklo
                             "Minimum App Ram Size: {:?}\n",
                             header.get_minimum_app_ram_size()
                         );
+
                         println!(
                             "Init function offset: {:?}\n",
                             header.get_init_function_offset()
